@@ -2,6 +2,15 @@
 
 ParteUno::ParteUno(int selec, int dist, int st) : distance(dist), stop(st), selection(selec) {}
 
+//Get
+vector<vector<double> > ParteUno::get_centroides(){
+    return this -> centr;
+}
+
+vector<vector<vector<double> > > ParteUno::get_clusters(){
+    return this -> clusts;
+}
+
 //Distancias
 double ParteUno::euclidian_distance(const vector<double>& x1, const vector<double>& x2){
     double sum = 0.0;
@@ -106,7 +115,7 @@ void ParteUno::update_centroids(vector<vector<double> >& centroids, const vector
     }
 }
 
-//TO DO ver si devuelve centroides o clusters 
+//Algortimo
 void ParteUno::lloyd_function(const vector<vector<double> >& data, int k, int maxIterations){
 
     vector<vector<double> > centroids;
@@ -124,6 +133,11 @@ void ParteUno::lloyd_function(const vector<vector<double> >& data, int k, int ma
 
             //Actualizar centroides mediante la media, valor medio en el conjunto de datos
             update_centroids(centroids,clusters);
+
+            if(iter == maxIterations-1) {
+                this -> centr = centroids;
+                this -> clusts = clusters;
+            }
         }
     }
     else {
@@ -139,7 +153,10 @@ void ParteUno::lloyd_function(const vector<vector<double> >& data, int k, int ma
 
             update_centroids(centroids,clusters);
 
+            this -> clusts = clusters;
+
         }while (!comparar_centroids(antCentroids,centroids));
 
+        this -> centr = antCentroids;
     }
 }

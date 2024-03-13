@@ -108,6 +108,8 @@ int main(){
                 row.push_back(val);
             }
             if (tiene_etiqueta[i]){
+                //TO DO: guardar etiqueta
+
                 // Solo si tiene etiqueta
                 vector<double> new_row = vector<double>(row.begin(),row.end()-1);
                 data.push_back(new_row);
@@ -125,6 +127,9 @@ int main(){
         int maxIter = 200;
         ParteUno pt1(SELECTION, DISTANCE, STOP);
         pt1.lloyd_function(normData,k,maxIter);
+
+        vector<vector<double> > centroides = pt1.get_centroides();
+        vector<vector<vector<double> > > clusters = pt1.get_clusters();
     }
 
     return 0;
