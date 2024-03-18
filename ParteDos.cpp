@@ -1,5 +1,6 @@
 #include "ParteDos.hpp"
 
+
 double ParteDos::euclidian_distance(const vector<double>& x1, const vector<double>& x2){
     double sum = 0.0;
     for(int i = 0; i < x1.size(); i++){
@@ -77,4 +78,28 @@ double ParteDos::davies_bouldin(const vector<vector<vector<double> > >& clusters
     }
     
     return davies_bouldin_score/k;
+}
+
+//Medida externa
+double ParteDos::rand_index(const vector<vector<double> >& cluster1, int etq_c1,
+                                const vector<vector<double> >& cluster2, int etq_c2){
+                                    
+    int n = min(cluster1.size(),cluster2.size());
+    double a = 0.0;
+    double b = 0.0;
+    double binomial = (n * (n-1))/2;
+    
+    for(int i = 0; i < n; i++){
+        int etq_p1 = static_cast<int>(cluster1[i][0]);
+        for(int j = i+1; j < n; j++){
+            int etq_p2 = static_cast<int>(cluster2[j][0]);
+
+            if (etq_p1 == etq_c1 && etq_p2 == etq_c2) a++;
+            else if (etq_p1 != etq_c1 && etq_p2 != etq_c2) b++;
+        }
+    }
+    
+    double resultado = (a+b)/binomial;
+    resultado = trunc(resultado * 100) / 100;
+    return resultado;
 }

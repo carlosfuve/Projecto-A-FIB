@@ -19,7 +19,8 @@ void Normalizar::estandarizar_matriz(vector<vector<double> >& matriz, const vect
         double rango = maxValues[i] - minValues[i];
         double minVal = minValues[i];
         for(int j = 0; j < matriz[0].size(); j++){
-            matriz[i][j] = (matriz[i][j] - minVal) / rango;
+            if (rango == 0) matriz[i][j] = 0.0;
+            else matriz[i][j] = (matriz[i][j] - minVal) / rango;
         }
     }
 }

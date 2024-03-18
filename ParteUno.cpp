@@ -96,6 +96,51 @@ vector<vector<double> > ParteUno::kmeans_plus_plus(const vector<vector<double> >
     return centroids;
 }
 
+vector<vector<double> > ParteUno::kmeans_plus_plus_etq(const vector<vector<double> >& data, int k){ 
+   //Se elige un punto aleatorio como el primer centroide
+    vector<vector<double> > centroids;
+    int index_cent = rand()%data.size();
+    vector<double> row_sin_eqt = vector<double>(data[index_cent].begin()+1,data[index_cent].end());
+    centroids.push_back(row_sin_eqt);
+
+    while(centroids.size() < k){
+        double totalDistance = 0.0;
+        //Crea un vector con el número máximo que puede ser representado por un double
+        vector<double> minDistance(data.size(), numeric_limits<double>::max());
+
+        //Se calcula la distancia minima entre los puntos y los centroides seleccionados
+        for(int i = 0; i < data.size(); i++){
+            for(int j = 0; j < centroids.size(); j++){
+                vector<double> data_sin_eqt = vector<double>(data[i].begin()+1,data[i].end());
+                double distance = pow(euclidian_distance(data_sin_eqt,centroids[j]),2);
+                minDistance[i] = min(minDistance[i],distance);
+            }
+            totalDistance += minDistance[i];
+        }
+
+        /*Seleccionar siguiente centroide con probabilidad ponderada por distancias,
+        se multiplica la distancia total entre un valor entre 0 y 1
+        para posteriormente seleccionar el punto que sumando todos sus anteriores supera a la distancia prob*/
+        double prob = ((double) rand() / RAND_MAX) * totalDistance;
+        double sum = 0.0;
+        int nexCentroid = -1;
+        for(int i = 0; i < data.size(); i++){
+            sum += minDistance[i];
+            if (sum >= prob){
+                nexCentroid = i;
+                break;
+            }
+        }
+        
+        if (nexCentroid != -1) {
+            vector<double> row_sin_eqt_next = vector<double>(data[nexCentroid].begin()+1,data[nexCentroid].end());
+            centroids.push_back(row_sin_eqt_next);
+        }
+
+    }
+    return centroids;
+}
+
 
 
 void ParteUno::update_centroids(vector<vector<double> >& centroids, const vector<vector<vector<double> > >& clusters){
@@ -153,6 +198,77 @@ void ParteUno::lloyd_function(const vector<vector<double> >& data, int k, int ma
 
             update_centroids(centroids,clusters);
 
+            this -> clusts = clusters;
+
+        }while (!comparar_centroids(antCentroids,centroids));
+
+        this -> centr = antCentroids;
+    }
+}
+
+void ParteUno::update_centroids_etq(vector<vector<double> >& centroids, const vector<vector<vector<double> > >& clusters){
+    for(int i = 0; i < clusters.size(); i++){
+        vector<double> sumCentroids(centroids[i].size(),0);
+        //Para cada punto del cluster
+        for(int j = 0; j < clusters[i].size(); j++){
+            for(int t = 0; t < centroids[i].size(); t++) {
+                sumCentroids[t] += clusters[i][j][t+1];
+            }
+        }
+
+        //Actualizar d coordenadas
+        if(!clusters[i].empty()){
+            for(int d = 0; d < centroids[i].size(); d++){
+                centroids[i][d] = sumCentroids[d] / clusters[i].size();
+            }
+        }
+    }
+}
+
+//Algoritmo con etiquetas 
+void ParteUno::lloyd_function_etq(const vector<vector<double> >& data, int k, int maxIterations){
+    vector<vector<double> > centroids;
+    if (this -> selection == 0) {
+        for(int i = 0; i < k; i++) {
+            int index_cent = rand()%data.size();
+            vector<double> row_sin_eqt = vector<double>(data[index_cent].begin()+1,data[index_cent].end());
+            centroids.push_back(row_sin_eqt);
+        }
+    }
+    else centroids = kmeans_plus_plus_etq(data,k);
+
+    if(this -> stop == 0){
+        for(int iter = 0; iter < maxIterations; iter++){
+            //Cada iteración se crea un cluster nuevo
+            vector<vector<vector<double> > > clusters(k);
+            for(int n = 0; n < data.size(); n++){
+                vector<double> data_sin_eqt = vector<double>(data[n].begin()+1,data[n].end());
+                int indexCluster = cluster_cercano(data_sin_eqt, centroids); 
+                clusters[indexCluster].push_back(data[n]);
+            }
+
+            //Actualizar centroides mediante la media, valor medio en el conjunto de datos
+            update_centroids_etq(centroids,clusters);
+
+            if(iter == maxIterations-1) {
+                this -> centr = centroids;
+                this -> clusts = clusters;
+            }
+        }
+    }
+    else{
+        vector<vector<double> > antCentroids;
+        do {
+            antCentroids = centroids;
+
+            vector<vector<vector<double> > > clusters(k);
+            for(int n = 0; n < data.size(); n++){
+                vector<double> data_sin_eqt = vector<double>(data[n].begin()+1,data[n].end());
+                int indexCluster = cluster_cercano(data_sin_eqt, centroids); 
+                clusters[indexCluster].push_back(data[n]);
+            }
+
+            update_centroids_etq(centroids,clusters);
             this -> clusts = clusters;
 
         }while (!comparar_centroids(antCentroids,centroids));

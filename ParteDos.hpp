@@ -9,6 +9,7 @@ class ParteDos{
 private: 
 
 public:
+
     double euclidian_distance(const vector<double>& x1, const vector<double>& x2);
     double calcular_dispersion(const vector<vector<double>>& cluster, const vector<double>& centroid); 
 
@@ -18,9 +19,8 @@ public:
     
     double davies_bouldin(const vector<vector<vector<double> > >& clusters, const vector<vector<double> >& centroides);
 
-    //Medida externa ---> Rand Index
-
-    //Valor optimo de k ---> Metodo del codo
+    //Medida externa
+    double rand_index(const vector<vector<double> >& cluster1, int etq_c1,const vector<vector<double> >& cluster2, int etq_c2);
 
 };
 
