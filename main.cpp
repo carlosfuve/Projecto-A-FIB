@@ -6,6 +6,7 @@
 #include <cmath>
 #include <regex>
 #include <filesystem>
+#include <ctime>
 #include "Normalizar.hpp"
 #include "ParteUno.hpp"
 #include "ParteDos.hpp"
@@ -71,7 +72,7 @@ vector<bool> buscar_si_tiene_etiqueta(int num_datasets){
     return tiene_etiqueta;
 }
 
-//Añadir en la grafica del codo las posibles variantes o no???
+
 void grafica_del_codo(const vector<int>& k_values, const vector<vector<double> >& normData, const vector<int>& variante){
         vector<double> y_values(k_values.size()+1);
         int n = normData.size();
@@ -88,7 +89,7 @@ void grafica_del_codo(const vector<int>& k_values, const vector<vector<double> >
                     dist_total += pt1.euclidian_distance(clusters[c][n],centroides[c]);
                 }
             }
-            y_values[k_values[i]] = dist_total/k_values[i];
+            y_values[k_values[i]] = round(dist_total/k_values[i]);
         }
 
         cout << "Valores de la k: " << endl;
@@ -117,7 +118,7 @@ void grafica_del_codo_etq(const vector<int>& k_values, const vector<vector<doubl
                     dist_total += pt1.euclidian_distance(data_sin_eqt,centroides[c]);
                 }
             }
-            y_values[k_values[i]] = dist_total/k_values[i];
+            y_values[k_values[i]] = round(dist_total/k_values[i]);
         }
 
         cout << "Valores de la k: " << endl;
@@ -130,7 +131,7 @@ void grafica_del_codo_etq(const vector<int>& k_values, const vector<vector<doubl
 
 }
 
-void escribe_salida(const vector<int>& variante, double cal_score, double davies_score){
+void escribe_salida(const vector<int>& variante, double cal_score, double davies_score, double duration){
     string selection, distancia, stop;
     if (variante[0] == 0) selection = "random";
     else selection = "k-means++";
@@ -141,14 +142,14 @@ void escribe_salida(const vector<int>& variante, double cal_score, double davies
     if (variante[2] == 0) stop = "max_iteraciones";
     else stop = "hasta que los centroides no cambien";
 
-    
+    cout << "Duración del algortimo: " << duration << " segundos" << endl;
     cout << "Con metodo de selecion: " << selection << ", ";
     cout << "con metodo de distancia: " << distancia << " y  metodo de stop: " << stop;
     cout << " se obtiene un calinski_score: " << cal_score;
     cout << " y se obtine un davies score: " << davies_score << endl;
 }
 
-void escribe_salida_etq(const vector<int>& variante, double rand_score){
+void escribe_salida_etq(const vector<int>& variante, double rand_score, double duration){
     string selection, distancia, stop;
     if (variante[0] == 0) selection = "random";
     else selection = "k-means++";
@@ -159,7 +160,7 @@ void escribe_salida_etq(const vector<int>& variante, double rand_score){
     if (variante[2] == 0) stop = "max_iteraciones";
     else stop = "hasta que los centroides no cambien";
 
-    
+    cout << "Duración del algortimo: " << duration << " segundos" << endl;
     cout << "Con metodo de selecion: " << selection << ", ";
     cout << "con metodo de distancia: " << distancia << " y  metodo de stop: " << stop;
     cout << " se obtiene un avg_rand_score: " << rand_score << endl;
@@ -173,10 +174,11 @@ int main(){
     vector<bool> tiene_etiqueta = buscar_si_tiene_etiqueta(n_datasets);
     vector<int> k_values = {1,2,3,4,5,6,7,8,9,10};
     vector<vector<int> > variantes = {{0,0,0},{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1}};
-    vector<int> mejor_k_datset = {0, 7, 2, 2, 4, 4, 2};
+    vector<int> mejor_k_datset = {0, 7, 2, 2, 3, 4, 3};
+    
     for(int i = 1; i < n_datasets; i++){
         //Condición para evaluar solo el dataset elegido, para hacer pruebas
-        if(i != 4) continue;
+        if(i != 6) continue;
 
         string name_dataset = rutas_archivos[i];
         ifstream file(name_dataset);
@@ -218,13 +220,14 @@ int main(){
             //Añadir las etiquetas a la columna 0 de los puntos
             for(int i = 0; i < normData.size();i++) normData[i].insert(normData[i].begin(),etiquetas[i]);    
 
-            //Algortimo de clustering
             double max_rand_score_total = 0.0;
             double variante_max_score;
             for(int i = 0; i < variantes.size(); i++){
-                //ParteUno pt1(select,distance,stop);
+                //Algortimo de clustering
                 ParteUno pt1(variantes[i][0],variantes[i][1],variantes[i][2]);
+                clock_t start = clock();
                 pt1.lloyd_function_etq(normData,k,MAX_ITER);
+                
                 vector<vector<vector<double> > > clusters = pt1.get_clusters();
 
                 //Calcular la medida externa, Rand Index, para cada par de clusters
@@ -238,13 +241,17 @@ int main(){
                     }
                 }
                 avg_rand_score = avg_rand_score/binomial;
+                clock_t end = clock();
 
                 if(avg_rand_score > max_rand_score_total){
                     max_rand_score_total = avg_rand_score;
                     variante_max_score = i;
                 }
 
-                escribe_salida_etq(variantes[i],avg_rand_score);
+                // Calcular la duración
+                double duration = static_cast<double>(end - start) / CLOCKS_PER_SEC;
+
+                escribe_salida_etq(variantes[i],avg_rand_score,duration);
             }
             cout << endl;
 
@@ -253,11 +260,12 @@ int main(){
 
         }
         else{
-            //Algortimo de clustering
             double max_calinksi_score_total = 0.0;
             double variante_max_score;
             for(int i = 0; i < variantes.size(); i++){
+                //Algortimo de clustering
                 ParteUno pt1(variantes[i][0],variantes[i][1],variantes[i][2]);
+                clock_t start = clock();
                 pt1.lloyd_function_etq(normData,k,MAX_ITER);
                 vector<vector<vector<double> > > clusters = pt1.get_clusters();
                 vector<vector<double> > centroides = pt1.get_centroides();
@@ -269,13 +277,15 @@ int main(){
                 double cal_score = pt2.davies_bouldin(clusters,centroides);
                 //Se busca minimizar el davies_bouldin_score
                 double davies_score = pt2.davies_bouldin(clusters,centroides);
+                clock_t end = clock();
 
                 if(cal_score > max_calinksi_score_total){
                     max_calinksi_score_total = cal_score;
                     variante_max_score = i;
                 }
 
-                escribe_salida(variantes[i],cal_score,davies_score);
+                double duration = static_cast<double>(end - start) / CLOCKS_PER_SEC;
+                escribe_salida(variantes[i],cal_score,davies_score,duration);
             }
             cout << endl;
             
