@@ -1,0 +1,23 @@
+Número de clusters: 2
+
+Duración del algortimo: 1.53046 segundos
+Con metodo de selecion: random, con metodo de distancia: euclidean y  metodo de stop: max_iteraciones se obtiene un avg_rand_score: 0.97
+Duración del algortimo: 0.095775 segundos
+Con metodo de selecion: random, con metodo de distancia: euclidean y  metodo de stop: hasta que los centroides no cambien se obtiene un avg_rand_score: 0.97
+Duración del algortimo: 1.18873 segundos
+Con metodo de selecion: random, con metodo de distancia: manhattan y  metodo de stop: max_iteraciones se obtiene un avg_rand_score: 0.96
+Duración del algortimo: 0.084522 segundos
+Con metodo de selecion: random, con metodo de distancia: manhattan y  metodo de stop: hasta que los centroides no cambien se obtiene un avg_rand_score: 0.96
+Duración del algortimo: 1.43943 segundos
+Con metodo de selecion: k-means++, con metodo de distancia: euclidean y  metodo de stop: max_iteraciones se obtiene un avg_rand_score: 0.97
+Duración del algortimo: 0.058202 segundos
+Con metodo de selecion: k-means++, con metodo de distancia: euclidean y  metodo de stop: hasta que los centroides no cambien se obtiene un avg_rand_score: 0.62
+Duración del algortimo: 1.13215 segundos
+Con metodo de selecion: k-means++, con metodo de distancia: manhattan y  metodo de stop: max_iteraciones se obtiene un avg_rand_score: 0.6
+Duración del algortimo: 0.087579 segundos
+Con metodo de selecion: k-means++, con metodo de distancia: manhattan y  metodo de stop: hasta que los centroides no cambien se obtiene un avg_rand_score: 0.96
+
+Valores de la k: 
+1 2 3 4 5 6 7 8 9 10 
+Valores correspondientes a la k: 
+1215 354 193 125 92 71 57 47 40 35 

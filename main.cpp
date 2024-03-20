@@ -175,7 +175,7 @@ int main(){
     vector<int> k_values = {1,2,3,4,5,6,7,8,9,10};
     vector<vector<int> > variantes = {{0,0,0},{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1}};
     vector<int> mejor_k_datset = {0, 7, 2, 2, 3, 4, 3};
-    
+
     for(int i = 1; i < n_datasets; i++){
         //Condición para evaluar solo el dataset elegido, para hacer pruebas
         if(i != 6) continue;
@@ -274,7 +274,7 @@ int main(){
                 //Calcular la medida interna
                 ParteDos pt2;
                 //Se busca maximizar el calinski_score
-                double cal_score = pt2.davies_bouldin(clusters,centroides);
+                double cal_score = pt2.calinski_harabasz(normData,centroides,clusters);
                 //Se busca minimizar el davies_bouldin_score
                 double davies_score = pt2.davies_bouldin(clusters,centroides);
                 clock_t end = clock();

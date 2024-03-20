@@ -31,7 +31,7 @@ double ParteDos::calinski_harabasz(const vector<vector<double> >& data ,const ve
             global_centroide[j] += data[i][j];
         }
     }
-    for(int i = 0; i < global_centroide.size(); i++) global_centroide[i] /= n;
+    for(int i = 0; i < global_centroide.size(); i++) global_centroide[i] = global_centroide[i]/n;
 
     //Calculo de distancias de todos los centroides con respecto al centroide global
     double distance_centroids_global_distance = 0.0;

@@ -1,0 +1,23 @@
+Número de clusters: 3
+
+Duración del algortimo: 0.497844 segundos
+Con metodo de selecion: random, con metodo de distancia: euclidean y  metodo de stop: max_iteraciones se obtiene un calinski_score: 1.1144 y se obtine un davies score: 2.34519
+Duración del algortimo: 0.042166 segundos
+Con metodo de selecion: random, con metodo de distancia: euclidean y  metodo de stop: hasta que los centroides no cambien se obtiene un calinski_score: 0.877417 y se obtine un davies score: 3.47526
+Duración del algortimo: 0.341235 segundos
+Con metodo de selecion: random, con metodo de distancia: manhattan y  metodo de stop: max_iteraciones se obtiene un calinski_score: 0.878881 y se obtine un davies score: 3.65362
+Duración del algortimo: 0.019263 segundos
+Con metodo de selecion: random, con metodo de distancia: manhattan y  metodo de stop: hasta que los centroides no cambien se obtiene un calinski_score: 0.878881 y se obtine un davies score: 3.65362
+Duración del algortimo: 0.502629 segundos
+Con metodo de selecion: k-means++, con metodo de distancia: euclidean y  metodo de stop: max_iteraciones se obtiene un calinski_score: 1.17371 y se obtine un davies score: 2.38249
+Duración del algortimo: 0.018331 segundos
+Con metodo de selecion: k-means++, con metodo de distancia: euclidean y  metodo de stop: hasta que los centroides no cambien se obtiene un calinski_score: 1.30224 y se obtine un davies score: 2.91189
+Duración del algortimo: 0.3466 segundos
+Con metodo de selecion: k-means++, con metodo de distancia: manhattan y  metodo de stop: max_iteraciones se obtiene un calinski_score: 0.878881 y se obtine un davies score: 3.65362
+Duración del algortimo: 0.010445 segundos
+Con metodo de selecion: k-means++, con metodo de distancia: manhattan y  metodo de stop: hasta que los centroides no cambien se obtiene un calinski_score: 0.878881 y se obtine un davies score: 3.65362
+
+Valores de la k: 
+1 2 3 4 5 6 7 8 9 10 
+Valores correspondientes a la k: 
+662 245 149 108 73 59 50 42 36 32 
